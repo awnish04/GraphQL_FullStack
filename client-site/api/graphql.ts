@@ -19,3 +19,5 @@ export const getAbout = async (): Promise<About[]> => {
   const data = await request<GetAboutResponse>(endpoint, query);
   return data.getAbout;
 };
+export type { About };
+
