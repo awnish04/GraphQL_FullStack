@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { FileUpload } from "../ui/file-upload";
+import Image from "next/image";
 
 export type AboutEntry = {
   id?: string;
@@ -137,7 +138,7 @@ export default function AboutForm({
               />
             </LabelInputContainer>
 
-            <LabelInputContainer>
+            {/* <LabelInputContainer>
               <Label htmlFor="imageUrl">Image URL</Label>
               <Input
                 id="imageUrl"
@@ -147,9 +148,31 @@ export default function AboutForm({
                 onChange={handleChange}
                 disabled={loading}
               />
-            </LabelInputContainer>
+            </LabelInputContainer> */}
 
-            <FileUpload/>
+            {/* <FileUpload
+              onChange={(url) =>
+                setForm((prev) => ({ ...prev, imageUrl: url }))
+              }
+            /> */}
+            <FileUpload
+              folder="about-images"
+              multiple={false}
+              onChange={(urls: string[]) =>
+                setForm((prev) => ({ ...prev, imageUrl: urls[0] || "" }))
+              }
+            />
+
+            {form.imageUrl && (
+              <div className="relative w-32 h-20">
+                <Image
+                  src={form.imageUrl}
+                  alt="Preview"
+                  fill
+                  className="object-contain rounded"
+                />
+              </div>
+            )}
           </div>
 
           <DialogFooter>

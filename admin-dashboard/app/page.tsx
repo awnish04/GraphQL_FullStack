@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Box, ChartLine, History} from "lucide-react";
+import { Users, Box, ChartLine, History } from "lucide-react";
 // import { AnalyticsChart } from "@/components/ui/analytics";
 // import { PieChart } from "@/components/ui/pie-chart";
 // import { BarChartComponent } from "@/components/ui/barchart";
@@ -57,7 +57,5 @@ export default function DashboardPage() {
       </div>
       <BarChartComponent /> */}
     </div>
-    
-    
   );
 }

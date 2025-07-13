@@ -3,7 +3,12 @@
 import React, { useEffect, useState } from "react";
 import AboutForm, { AboutEntry } from "@/components/aboutComponents/aboutForm";
 import AboutTable from "@/components/aboutComponents/aboutTable";
-import { createAbout, deleteAbout, getAbout, updateAbout } from "@/api/graphql";
+import {
+  createAbout,
+  deleteAbout,
+  getAbout,
+  updateAbout,
+} from "@/pages/api/graphql";
 import { toast } from "sonner";
 
 export default function AboutPage() {
@@ -49,7 +54,7 @@ export default function AboutPage() {
       toast.error("Something went wrong.");
     }
   };
-  
+
   const handleEdit = (entry: AboutEntry, index: number) => {
     setEditingIndex(index);
   };

@@ -1,4 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+"use client";
+
 import { cn } from "@/lib/utils";
 import React, { useRef, useState } from "react";
 import { motion } from "motion/react";
@@ -26,17 +28,52 @@ const secondaryVariant = {
   },
 };
 
+// export const FileUpload = ({
+//   onChange,
+// }: {
+//   onChange?: (url: string) => void;
+// }) => {
 export const FileUpload = ({
   onChange,
+  folder = "uploads",
+  multiple = false,
 }: {
-  onChange?: (files: File[]) => void;
+  onChange?: (urls: string[]) => void;
+  folder?: string;
+  multiple?: boolean;
 }) => {
   const [files, setFiles] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (newFiles: File[]) => {
-    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
-    onChange && onChange(newFiles);
+  const handleFileChange = async (newFiles: File[]) => {
+    if (!newFiles.length) return;
+
+    setUploading(true);
+    setFiles(newFiles);
+
+    const uploadedUrls: string[] = [];
+
+    for (const file of newFiles) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", folder); // ✅ send folder name
+
+      try {
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await res.json();
+        uploadedUrls.push(data.url);
+      } catch (err) {
+        console.error("Upload failed:", err);
+      }
+    }
+
+    onChange?.(uploadedUrls);
+    setUploading(false);
   };
 
   const handleClick = () => {
@@ -44,7 +81,7 @@ export const FileUpload = ({
   };
 
   const { getRootProps, isDragActive } = useDropzone({
-    multiple: false,
+    multiple,
     noClick: true,
     onDrop: handleFileChange,
     onDropRejected: (error) => {
@@ -53,11 +90,11 @@ export const FileUpload = ({
   });
 
   return (
-    <div className="w-full" {...getRootProps()}>
+    <div className="w-full border rounded-xl" {...getRootProps()}>
       <motion.div
         onClick={handleClick}
         whileHover="animate"
-        className="p-10 group/file block rounded-lg cursor-pointer w-full relative overflow-hidden"
+        className="p-4 group/file block rounded-lg cursor-pointer w-full relative overflow-hidden"
       >
         <input
           ref={fileInputRef}
@@ -76,7 +113,7 @@ export const FileUpload = ({
           <p className="relative z-20 font-sans font-normal text-neutral-400 dark:text-neutral-400 text-base mt-2">
             Drag or drop your files here or click to upload
           </p>
-          <div className="relative w-full mt-10 max-w-xl mx-auto">
+          <div className="relative w-full max-w-xl mx-auto">
             {files.length > 0 &&
               files.map((file, idx) => (
                 <motion.div

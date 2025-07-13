@@ -21,6 +21,9 @@ import {
 
 import { AboutEntry } from "./aboutForm";
 import { Card } from "../ui/card";
+import Image from "next/image";
+import DeleteConfirmationDialog from "../DeleteConfirmationDialog";
+import { useState } from "react";
 
 interface AboutTableProps {
   entries: AboutEntry[];
@@ -33,6 +36,11 @@ export default function AboutTable({
   onEdit,
   onDelete,
 }: AboutTableProps) {
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [entryToDeleteIndex, setEntryToDeleteIndex] = useState<number | null>(
+    null
+  );
+
   return (
     <div className="mt-6">
       <Card className="py-0">
@@ -57,13 +65,15 @@ export default function AboutTable({
                 <TableRow key={index}>
                   <TableCell>
                     {entry.imageUrl ? (
-                      <img
-                        src={entry.imageUrl}
-                        alt={entry.heading}
-                        width={48}
-                        height={48}
-                        className="h-28 w-32 rounded object-cover"
-                      />
+                      <div className="relative h-22 max-w-36 rounded overflow-hidden">
+                        <Image
+                          src={entry.imageUrl}
+                          alt={entry.heading}
+                          fill
+                          className="object-cover rounded"
+                          sizes="(max-width: 768px) 100vw, 32vw"
+                        />
+                      </div>
                     ) : (
                       <div className="h-12 w-12 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center">
                         <ImageOff className="text-gray-500 w-5 h-5" />
@@ -89,8 +99,18 @@ export default function AboutTable({
                           Edit
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem
+                        {/* <DropdownMenuItem
                           onClick={() => onDelete?.(index)}
+                          className="text-red-600 focus:text-red-600 dark:text-red-400 dark:focus:text-red-400"
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Delete
+                        </DropdownMenuItem> */}
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setEntryToDeleteIndex(index);
+                            setDeleteDialogOpen(true);
+                          }}
                           className="text-red-600 focus:text-red-600 dark:text-red-400 dark:focus:text-red-400"
                         >
                           <Trash2 className="w-4 h-4 mr-2" />
@@ -105,6 +125,20 @@ export default function AboutTable({
           </TableBody>
         </Table>
       </Card>
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        onClose={() => {
+          setDeleteDialogOpen(false);
+          setEntryToDeleteIndex(null);
+        }}
+        onConfirm={() => {
+          if (entryToDeleteIndex !== null) {
+            onDelete?.(entryToDeleteIndex);
+            setDeleteDialogOpen(false);
+            setEntryToDeleteIndex(null);
+          }
+        }}
+      />
     </div>
   );
 }
