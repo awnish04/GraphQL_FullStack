@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -17,8 +18,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { FileUpload } from "../ui/file-upload";
-import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
+import TechStackSelector from "../TechStackSelector";
+import { Loader2Icon } from "lucide-react";
 
 export type ProjectEntry = {
   id?: string;
@@ -37,13 +38,15 @@ interface ProjectFormProps {
   onCancelEdit?: () => void;
 }
 
-const availableTech = [
-  "Next.js",
-  "Tailwind",
-  "GraphQL",
-  "MongoDB",
-  "TypeScript",
-];
+function extractFileName(url: string): string {
+  try {
+    const segments = url.split("/");
+    return decodeURIComponent(segments[segments.length - 1].split("?")[0]);
+  } catch {
+    return "unknown.jpg";
+  }
+}
+
 
 export default function ProjectForm({
   onAdd,
@@ -62,6 +65,7 @@ export default function ProjectForm({
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -69,15 +73,6 @@ export default function ProjectForm({
       setOpen(true);
     }
   }, [initialData]);
-
-  const handleTechToggle = (tech: string) => {
-    setForm((prev) => ({
-      ...prev,
-      techStack: prev.techStack.includes(tech)
-        ? prev.techStack.filter((t) => t !== tech)
-        : [...prev.techStack, tech],
-    }));
-  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -123,7 +118,7 @@ export default function ProjectForm({
           </DialogTrigger>
         )}
       </div>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[625px] max-h-[90vh] overflow-y-auto">
         <form onSubmit={handleSubmit} className="space-y-4">
           <DialogHeader>
             <DialogTitle>{isEditing ? "Edit" : "Add"} Project</DialogTitle>
@@ -141,6 +136,7 @@ export default function ProjectForm({
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
             />
+            <TechStackSelector form={form} setForm={setForm} />
 
             <Label>Description</Label>
             <Textarea
@@ -151,61 +147,73 @@ export default function ProjectForm({
               }
             />
 
-            <Label>Tech Stack</Label>
-            <div className="flex flex-wrap gap-2">
-              {availableTech.map((tech) => (
-                <Badge
-                  key={tech}
-                  variant={
-                    form.techStack.includes(tech) ? "default" : "outline"
+            <div className="flex w-full justify-between space-x-4">
+              <div className="w-full">
+                <Label>GitHub URL</Label>
+                <Input
+                  name="githubUrl"
+                  value={form.githubUrl}
+                  onChange={(e) =>
+                    setForm({ ...form, githubUrl: e.target.value })
                   }
-                  onClick={() => handleTechToggle(tech)}
-                  className="cursor-pointer"
-                >
-                  {tech}
-                </Badge>
-              ))}
+                />
+              </div>
+
+              <div className="w-full">
+                <Label>Live URL</Label>
+                <Input
+                  name="liveUrl"
+                  value={form.liveUrl}
+                  onChange={(e) =>
+                    setForm({ ...form, liveUrl: e.target.value })
+                  }
+                />
+              </div>
             </div>
 
-            <Label>GitHub URL</Label>
-            <Input
-              name="githubUrl"
-              value={form.githubUrl}
-              onChange={(e) => setForm({ ...form, githubUrl: e.target.value })}
-            />
-
-            <Label>Live URL</Label>
-            <Input
-              name="liveUrl"
-              value={form.liveUrl}
-              onChange={(e) => setForm({ ...form, liveUrl: e.target.value })}
-            />
-
+            {/* <FileUpload
+              folder="project-images"
+              multiple
+              onStart={() => setUploading(true)}
+              onChange={(urls: string[]) => {
+                setForm((prev) => ({ ...prev, imageUrls: urls }));
+                setUploading(false); // ✅ Add this here to stop spinner after images are set
+              }}
+            /> */}
+            {/* <FileUpload
+              folder="project-images"
+              multiple
+              onStart={() => setUploading(true)}
+              existingFiles={form.imageUrls.map((url) => ({
+                url,
+                name: "image.jpg", // If stored in DB or retrieved from server
+                size: 123456, // Approximate size in bytes
+                type: "image/jpeg", // MIME type
+              }))}
+              onChange={(urls: string[]) => {
+                setForm((prev) => ({ ...prev, imageUrls: urls }));
+                setUploading(false);
+              }}
+            /> */}
             <FileUpload
               folder="project-images"
               multiple
-              onChange={
-                (urls: string[]) =>
-                  setForm((prev) => ({ ...prev, imageUrls: urls }))
-                // setForm((prev) => ({ ...prev, imageUrl: urls[0] || "" }))
+              onStart={() => setUploading(true)}
+              existingFiles={
+                isEditing
+                  ? form.imageUrls.map((url) => ({
+                      url,
+                      name: extractFileName(url), // ⬅️ extract from URL or store in DB
+                      size: 0, // You can leave real size if known
+                      type: "image/jpeg", // Set real type if known
+                    }))
+                  : []
               }
+              onChange={(urls: string[]) => {
+                setForm((prev) => ({ ...prev, imageUrls: urls }));
+                setUploading(false);
+              }}
             />
-
-            <div className="flex gap-2 flex-wrap">
-              {form.imageUrls.map((url, idx) => (
-                <div
-                  key={idx}
-                  className="relative w-28 h-20 rounded overflow-hidden"
-                >
-                  <Image
-                    src={url}
-                    alt="preview"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
           </div>
 
           <DialogFooter>
@@ -218,8 +226,20 @@ export default function ProjectForm({
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit" disabled={loading}>
+            {/* <Button type="submit" disabled={loading}>
               {loading ? "Saving..." : isEditing ? "Update" : "Save"}
+            </Button> */}
+            <Button type="submit" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2Icon className="animate-spin mr-2 h-4 w-4" />
+                  {isEditing ? "Updating..." : "Saving..."}
+                </>
+              ) : isEditing ? (
+                "Update"
+              ) : (
+                "Save"
+              )}
             </Button>
           </DialogFooter>
         </form>

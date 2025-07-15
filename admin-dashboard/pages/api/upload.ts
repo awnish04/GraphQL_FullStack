@@ -129,11 +129,35 @@ export default async function handler(
     console.log("Uploading to folder:", folder);
 
     try {
+      // const result = await cloudinary.uploader.upload(filepath, {
+      //   folder,
+      // });
+
+      // const result = await cloudinary.uploader.upload(filepath, {
+      //   folder,
+      //   transformation: [
+      //     { quality: "auto:best", fetch_format: "auto" }, // Preserve quality and let Cloudinary pick best format
+      //   ],
+      // });
+
       const result = await cloudinary.uploader.upload(filepath, {
         folder,
+        transformation: [{ quality: "auto:best", fetch_format: "auto" }],
+        eager: [
+          { width: 800, crop: "scale" },
+          { width: 1200, crop: "scale" },
+        ],
       });
 
-      return res.status(200).json({ url: result.secure_url });
+      // return res.status(200).json({ url: result.secure_url });
+      return res.status(200).json({
+        url: result.secure_url,
+        width: result.width,
+        height: result.height,
+        bytes: result.bytes,
+        format: result.format,
+        original_filename: result.original_filename,
+      });
     } catch (uploadErr) {
       console.error("Cloudinary upload error:", uploadErr);
       return res.status(500).json({ error: "Upload to Cloudinary failed" });

@@ -17,7 +17,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Github, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import DeleteConfirmationDialog from "../DeleteConfirmationDialog";
@@ -43,13 +43,16 @@ export default function ProjectTable({
 
   return (
     <div className="mt-6">
-      <Card>
+      <Card className="py-0">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-gray-100 dark:bg-gray-800 py-6">
             <TableRow>
               <TableHead>Image</TableHead>
               <TableHead>Title</TableHead>
               <TableHead>Stack</TableHead>
+              <TableHead>Discription</TableHead>
+              <TableHead>Github Url</TableHead>
+              <TableHead>Live Url</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -57,9 +60,9 @@ export default function ProjectTable({
             {entries.map((entry, index) => (
               <TableRow key={entry.id}>
                 <TableCell>
-                  <div className="relative w-20 h-14 rounded overflow-hidden">
+                  <div className="relative w-40 h-24 rounded overflow-hidden">
                     <Image
-                      src={entry.imageUrls?.[0]}
+                      src={entry.imageUrls?.[0] || "/placeholder.png"}
                       alt={entry.title}
                       fill
                       className="object-cover"
@@ -67,13 +70,56 @@ export default function ProjectTable({
                   </div>
                 </TableCell>
                 <TableCell>{entry.title}</TableCell>
-                <TableCell>
-                  <div className="flex flex-wrap gap-1">
+                <TableCell className="max-w-[300px] sm:max-w-[300px] truncate">
+                  <div className="flex flex-wrap gap-1 justify-between">
                     {entry.techStack.map((tech, idx) => (
-                      <Badge key={idx}>{tech}</Badge>
+                      <Badge variant="outline" key={idx}>
+                        {tech}
+                      </Badge>
                     ))}
                   </div>
                 </TableCell>
+                <TableCell>{entry.description}</TableCell>
+                <TableCell>
+                  <div className="flex items-center align-middle">
+                    <div>
+                      <Github />
+                    </div>
+                    <div>
+                      <a
+                        href={entry.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 underline"
+                      >
+                        GitHub
+                      </a>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center align-middle space-x-2">
+                    <div>
+                      <span className="relative flex size-3">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-600 opacity-75"></span>
+                        <span className="relative inline-flex size-3 rounded-full bg-red-600"></span>
+                      </span>
+                    </div>
+                    <div>
+                      <a
+                        href={entry.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-green-600 underline"
+                      >
+                        {/* <BounceLoader size={16} color="#10b981" /> */}
+                        {/* emerald-500 */}
+                        Live
+                      </a>
+                    </div>
+                  </div>
+                </TableCell>
+
                 <TableCell className="text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
