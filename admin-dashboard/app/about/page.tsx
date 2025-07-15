@@ -1,77 +1,26 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import AboutForm, { AboutEntry } from "@/components/aboutComponents/aboutForm";
+import AboutForm from "@/components/aboutComponents/aboutForm";
 import AboutTable from "@/components/aboutComponents/aboutTable";
-import {
-  createAbout,
-  deleteAbout,
-  getAbout,
-  updateAbout,
-} from "@/pages/api/graphql";
-import { toast } from "sonner";
+import AboutPagination from "@/components/aboutComponents/AboutPagination";
+import { useAboutManager } from "@/hooks/useAboutManager";
 
 export default function AboutPage() {
-  const [entries, setEntries] = useState<AboutEntry[]>([]);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Load data from backend
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getAbout();
-        setEntries(data);
-      } catch (error) {
-        console.error("Failed to load about data", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const handleAddOrEdit = async (entry: AboutEntry) => {
-    try {
-      if (entry.id) {
-        const updatedEntry = await updateAbout(entry.id, {
-          heading: entry.heading,
-          paragraph: entry.paragraph,
-          imageUrl: entry.imageUrl,
-        });
-
-        setEntries((prev) =>
-          prev.map((e) => (e.id === entry.id ? updatedEntry : e))
-        );
-      } else {
-        const newEntry = await createAbout(entry);
-        setEntries((prev) => [...prev, newEntry]);
-      }
-
-      setEditingIndex(null);
-    } catch (err) {
-      console.error("Error updating about entries:", err);
-      toast.error("Something went wrong.");
-    }
-  };
-
-  const handleEdit = (entry: AboutEntry, index: number) => {
-    setEditingIndex(index);
-  };
-
-  const handleDelete = async (index: number) => {
-    const entry = entries[index];
-    if (!entry?.id) return;
-
-    try {
-      await deleteAbout(entry.id);
-      setEntries((prev) => prev.filter((_, i) => i !== index));
-      toast.success("Deleted successfully");
-    } catch (err) {
-      toast.error("Failed to delete.");
-      console.error(err);
-    }
-  };
+  const {
+    entries,
+    searchTerm,
+    setSearchTerm,
+    isLoading,
+    editingData,
+    isEditing,
+    currentPage,
+    totalPages,
+    setCurrentPage,
+    handleAddOrEdit,
+    handleEdit,
+    handleDelete,
+    cancelEdit,
+  } = useAboutManager();
 
   if (isLoading) {
     return (
@@ -85,14 +34,22 @@ export default function AboutPage() {
     <div className="space-y-6 p-4">
       <AboutForm
         onAdd={handleAddOrEdit}
-        initialData={editingIndex !== null ? entries[editingIndex] : undefined}
-        isEditing={editingIndex !== null}
-        onCancelEdit={() => setEditingIndex(null)}
+        initialData={editingData}
+        isEditing={isEditing}
+        onCancelEdit={cancelEdit}
       />
+
       <AboutTable
         entries={entries}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
         onEdit={handleEdit}
         onDelete={handleDelete}
+      />
+      <AboutPagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
       />
     </div>
   );

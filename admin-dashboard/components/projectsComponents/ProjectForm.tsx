@@ -47,7 +47,6 @@ function extractFileName(url: string): string {
   }
 }
 
-
 export default function ProjectForm({
   onAdd,
   initialData,
@@ -111,14 +110,14 @@ export default function ProjectForm({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold">Projects</h1>
+        {/* <h1 className="text-xl font-semibold">Projects</h1> */}
         {!isEditing && (
           <DialogTrigger asChild>
             <Button variant="outline">Add Project</Button>
           </DialogTrigger>
         )}
       </div>
-      <DialogContent className="sm:max-w-[625px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[625px]  max-h-[90vh] overflow-y-auto">
         <form onSubmit={handleSubmit} className="space-y-4">
           <DialogHeader>
             <DialogTitle>{isEditing ? "Edit" : "Add"} Project</DialogTitle>
@@ -171,30 +170,6 @@ export default function ProjectForm({
               </div>
             </div>
 
-            {/* <FileUpload
-              folder="project-images"
-              multiple
-              onStart={() => setUploading(true)}
-              onChange={(urls: string[]) => {
-                setForm((prev) => ({ ...prev, imageUrls: urls }));
-                setUploading(false); // ✅ Add this here to stop spinner after images are set
-              }}
-            /> */}
-            {/* <FileUpload
-              folder="project-images"
-              multiple
-              onStart={() => setUploading(true)}
-              existingFiles={form.imageUrls.map((url) => ({
-                url,
-                name: "image.jpg", // If stored in DB or retrieved from server
-                size: 123456, // Approximate size in bytes
-                type: "image/jpeg", // MIME type
-              }))}
-              onChange={(urls: string[]) => {
-                setForm((prev) => ({ ...prev, imageUrls: urls }));
-                setUploading(false);
-              }}
-            /> */}
             <FileUpload
               folder="project-images"
               multiple
@@ -226,9 +201,7 @@ export default function ProjectForm({
                 Cancel
               </Button>
             </DialogClose>
-            {/* <Button type="submit" disabled={loading}>
-              {loading ? "Saving..." : isEditing ? "Update" : "Save"}
-            </Button> */}
+
             <Button type="submit" disabled={loading}>
               {loading ? (
                 <>

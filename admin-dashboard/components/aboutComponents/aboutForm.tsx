@@ -18,7 +18,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { FileUpload } from "../ui/file-upload";
-import Image from "next/image";
 
 export type AboutEntry = {
   id?: string;
@@ -101,7 +100,7 @@ export default function AboutForm({
         )}
       </div>
 
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[625px] max-h-[90vh] overflow-y-auto">
         <form onSubmit={handleSubmit} className="space-y-4">
           <DialogHeader>
             <DialogTitle>{isEditing ? "Edit" : "Add"} About</DialogTitle>
@@ -137,24 +136,6 @@ export default function AboutForm({
                 className="resize-y"
               />
             </LabelInputContainer>
-
-            {/* <LabelInputContainer>
-              <Label htmlFor="imageUrl">Image URL</Label>
-              <Input
-                id="imageUrl"
-                name="imageUrl"
-                placeholder="Image URL"
-                value={form.imageUrl}
-                onChange={handleChange}
-                disabled={loading}
-              />
-            </LabelInputContainer> */}
-
-            {/* <FileUpload
-              onChange={(url) =>
-                setForm((prev) => ({ ...prev, imageUrl: url }))
-              }
-            /> */}
             <FileUpload
               folder="about-images"
               multiple={false}
@@ -162,17 +143,6 @@ export default function AboutForm({
                 setForm((prev) => ({ ...prev, imageUrl: urls[0] || "" }))
               }
             />
-
-            {form.imageUrl && (
-              <div className="relative w-32 h-20">
-                <Image
-                  src={form.imageUrl}
-                  alt="Preview"
-                  fill
-                  className="object-contain rounded"
-                />
-              </div>
-            )}
           </div>
 
           <DialogFooter>

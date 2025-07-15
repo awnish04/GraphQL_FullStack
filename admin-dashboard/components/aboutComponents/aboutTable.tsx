@@ -24,15 +24,21 @@ import { Card } from "../ui/card";
 import Image from "next/image";
 import DeleteConfirmationDialog from "../DeleteConfirmationDialog";
 import { useState } from "react";
+import AboutSearchBar from "./AboutSearchBar";
+import AboutEmptyState from "./AboutEmptyState";
 
 interface AboutTableProps {
   entries: AboutEntry[];
+  searchTerm: string;
+  setSearchTerm: (value: string) => void;
   onEdit?: (entry: AboutEntry, index: number) => void;
   onDelete?: (index: number) => void;
 }
 
 export default function AboutTable({
   entries,
+  searchTerm,
+  setSearchTerm,
   onEdit,
   onDelete,
 }: AboutTableProps) {
@@ -41,9 +47,12 @@ export default function AboutTable({
     null
   );
 
+  // const { entries, searchTerm, setSearchTerm } = useAboutManager();
+
   return (
     <div className="mt-6">
       <Card className="py-0">
+        <AboutSearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         <Table>
           <TableHeader className="bg-gray-100 dark:bg-gray-800 py-6 ">
             <TableRow>
@@ -55,11 +64,7 @@ export default function AboutTable({
           </TableHeader>
           <TableBody>
             {entries.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center py-8">
-                  No entries found. Add your first one!
-                </TableCell>
-              </TableRow>
+              <AboutEmptyState colSpan={4} />
             ) : (
               entries.map((entry, index) => (
                 <TableRow key={index}>
@@ -99,13 +104,7 @@ export default function AboutTable({
                           Edit
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        {/* <DropdownMenuItem
-                          onClick={() => onDelete?.(index)}
-                          className="text-red-600 focus:text-red-600 dark:text-red-400 dark:focus:text-red-400"
-                        >
-                          <Trash2 className="w-4 h-4 mr-2" />
-                          Delete
-                        </DropdownMenuItem> */}
+
                         <DropdownMenuItem
                           onClick={() => {
                             setEntryToDeleteIndex(index);

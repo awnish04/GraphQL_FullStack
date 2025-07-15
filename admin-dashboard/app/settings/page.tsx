@@ -1,30 +1,5 @@
 "use client";
 
-// import { ModeToggle } from "@/components/modetoggle";
-
-// export default function SettingsPage() {
-//   return (
-//     <div className="space-y-6">
-//       <div>
-//         <h1 className="text-2xl font-bold">Settings</h1>
-//         <p className="text-muted-foreground">Customize your preferences</p>
-//       </div>
-
-//       <div className="flex flex-col gap-4">
-//         <div>
-//           <h2 className="text-lg font-semibold">Appearance</h2>
-//           <p className="text-sm text-muted-foreground">Switch between light, dark, or system themes.</p>
-//           <div className="mt-2">
-//             <ModeToggle />
-//           </div>
-//         </div>
-
-//         {/* You can add more setting sections here */}
-//       </div>
-//     </div>
-//   );
-// }
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";

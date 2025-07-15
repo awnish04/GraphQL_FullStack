@@ -156,12 +156,12 @@ export const FileUpload = ({
                     key={idx}
                     className="flex gap-4 items-center p-2 rounded-lg border shadow bg-white dark:bg-neutral-900 relative"
                   >
-                    <div className="w-28 h-20 relative overflow-hidden rounded">
+                    <div className="w-32 h-20 relative overflow-hidden rounded">
                       <Image
                         src={file.url}
                         alt={`preview-${idx}`}
                         fill
-                        sizes="11px"
+                        sizes="128px"
                         className="object-cover w-full h-full"
                         onLoad={() => URL.revokeObjectURL(file.url)}
                       />

@@ -1,72 +1,26 @@
-// ✅ /admin-dashboard/app/projects/page.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { toast } from "sonner";
-import {
-  createProject,
-  deleteProject,
-  getProjects,
-  updateProject,
-} from "@/pages/api/graphql";
-import ProjectForm, { ProjectEntry } from "@/components/projectsComponents/ProjectForm";
+import { useProjectManager } from "@/hooks/useProjectManager";
+import ProjectForm from "@/components/projectsComponents/ProjectForm";
 import ProjectTable from "@/components/projectsComponents/ProjectTable";
-
+import ProjectPagination from "@/components/projectsComponents/ProjectPagination";
 
 export default function ProjectsPage() {
-  const [entries, setEntries] = useState<ProjectEntry[]>([]);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getProjects();
-        setEntries(data);
-      } catch (error) {
-        console.error("Failed to load project data", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const handleAddOrEdit = async (entry: ProjectEntry) => {
-    try {
-      if (entry.id) {
-        const updatedEntry = await updateProject(entry.id, entry);
-        setEntries((prev) =>
-          prev.map((e) => (e.id === entry.id ? updatedEntry : e))
-        );
-      } else {
-        const newEntry = await createProject(entry);
-        setEntries((prev) => [...prev, newEntry]);
-      }
-      setEditingIndex(null);
-    } catch (err) {
-      console.error("Error saving project entry:", err);
-      toast.error("Something went wrong.");
-    }
-  };
-
-  const handleEdit = (entry: ProjectEntry, index: number) => {
-    setEditingIndex(index);
-  };
-
-  const handleDelete = async (index: number) => {
-    const entry = entries[index];
-    if (!entry?.id) return;
-
-    try {
-      await deleteProject(entry.id);
-      setEntries((prev) => prev.filter((_, i) => i !== index));
-      toast.success("Deleted successfully");
-    } catch (err) {
-      toast.error("Failed to delete.");
-      console.error(err);
-    }
-  };
+  const {
+    entries,
+    isLoading,
+    editingEntry,
+    isEditing,
+    currentPage,
+    totalPages,
+    searchTerm,
+    setSearchTerm,
+    setCurrentPage,
+    handleAddOrEdit,
+    handleEdit,
+    handleDelete,
+    cancelEdit,
+  } = useProjectManager();
 
   if (isLoading) {
     return (
@@ -77,20 +31,29 @@ export default function ProjectsPage() {
   }
 
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-4 p-4">
       <ProjectForm
         onAdd={handleAddOrEdit}
-        initialData={editingIndex !== null ? entries[editingIndex] : undefined}
-        isEditing={editingIndex !== null}
-        onCancelEdit={() => setEditingIndex(null)}
+        initialData={editingEntry}
+        isEditing={isEditing}
+        onCancelEdit={cancelEdit}
       />
+
       <ProjectTable
         entries={entries}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
+
+      {totalPages > 1 && (
+        <ProjectPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      )}
     </div>
   );
 }
-
-
