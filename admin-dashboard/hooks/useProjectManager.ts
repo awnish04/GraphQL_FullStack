@@ -16,6 +16,7 @@ const ITEMS_PER_PAGE = 2;
 export function useProjectManager() {
   const [entries, setEntries] = useState<ProjectEntry[]>([]);
   const [editingEntry, setEditingEntry] = useState<ProjectEntry | undefined>(undefined);
+  // const [editingEntry, setEditingEntry] = useState<ProjectEntry | null>(null);
 
 
   const [isLoading, setIsLoading] = useState(true);
@@ -87,7 +88,7 @@ export function useProjectManager() {
     entries: paginatedEntries,
     allEntries: entries,
     editingEntry,
-    isEditing: editingEntry !== null,
+    isEditing: Boolean(editingEntry),
     isLoading,
     currentPage,
     totalPages,

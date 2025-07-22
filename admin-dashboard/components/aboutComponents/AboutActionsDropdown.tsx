@@ -1,27 +1,22 @@
 "use client";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { AboutEntry } from '@/components/aboutComponents/aboutForm';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
-interface AboutActionsDropdownProps {
-  entry: AboutEntry;
+interface Props {
   onEdit: () => void;
   onDelete: () => void;
 }
 
-export default function AboutActionsDropdown({
-  onEdit,
-  onDelete,
-}: AboutActionsDropdownProps){
+export default function AboutActionsDropdown({ onEdit, onDelete }: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -33,14 +28,11 @@ export default function AboutActionsDropdown({
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuItem onClick={onEdit}>
-          <Pencil className="w-4 h-4 mr-2" /> Edit
+          <Pencil className="mr-2 h-4 w-4" /> Edit
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={onDelete}
-          className="text-red-600 focus:text-red-600 dark:text-red-400 dark:focus:text-red-400"
-        >
-          <Trash2 className="w-4 h-4 mr-2" /> Delete
+        <DropdownMenuItem onClick={onDelete} className="text-red-600">
+          <Trash2 className="mr-2 h-4 w-4" /> Delete
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

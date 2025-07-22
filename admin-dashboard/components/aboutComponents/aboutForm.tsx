@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -18,6 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { FileUpload } from "../ui/file-upload";
+import { Loader2Icon } from "lucide-react";
 
 export type AboutEntry = {
   id?: string;
@@ -33,6 +35,14 @@ interface AboutFormProps {
   onCancelEdit?: () => void;
 }
 
+function extractFileName(url: string): string {
+  try {
+    const segments = url.split("/");
+    return decodeURIComponent(segments[segments.length - 1].split("?")[0]);
+  } catch {
+    return "unknown.jpg";
+  }
+}
 export default function AboutForm({
   onAdd,
   initialData,
@@ -47,6 +57,7 @@ export default function AboutForm({
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -139,9 +150,23 @@ export default function AboutForm({
             <FileUpload
               folder="about-images"
               multiple={false}
-              onChange={(urls: string[]) =>
-                setForm((prev) => ({ ...prev, imageUrl: urls[0] || "" }))
+              onStart={() => setUploading(true)}
+              existingFiles={
+                isEditing && form.imageUrl
+                  ? [
+                      {
+                        url: form.imageUrl,
+                        name: extractFileName(form.imageUrl),
+                        size: 0,
+                        type: "image/jpeg",
+                      },
+                    ]
+                  : []
               }
+              onChange={(urls: string[]) => {
+                setForm((prev) => ({ ...prev, imageUrl: urls[0] || "" }));
+                setUploading(false);
+              }}
             />
           </div>
 
@@ -155,8 +180,18 @@ export default function AboutForm({
                 Cancel
               </Button>
             </DialogClose>
+
             <Button type="submit" disabled={loading}>
-              {loading ? "Saving..." : isEditing ? "Update" : "Save"}
+              {loading ? (
+                <>
+                  <Loader2Icon className="animate-spin mr-2 h-4 w-4" />
+                  {isEditing ? "Updating..." : "Saving..."}
+                </>
+              ) : isEditing ? (
+                "Update"
+              ) : (
+                "Save"
+              )}
             </Button>
           </DialogFooter>
         </form>

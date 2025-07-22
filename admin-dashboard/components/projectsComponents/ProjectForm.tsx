@@ -110,7 +110,7 @@ export default function ProjectForm({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <div className="flex justify-between items-center">
-        {/* <h1 className="text-xl font-semibold">Projects</h1> */}
+        <h1 className="text-xl font-semibold">Add Your New Projects</h1>
         {!isEditing && (
           <DialogTrigger asChild>
             <Button variant="outline">Add Project</Button>
