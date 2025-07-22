@@ -18,14 +18,15 @@ import ProjectEmptyState from "./ProjectEmptyState";
 import ProjectActionsDropdown from "./ProjectActionsDropdown";
 import { useState } from "react";
 import ProjectSearchBar from "./ProjectSearchBar";
+import { toast } from "sonner";
 
 
 interface ProjectTableProps {
   entries: ProjectEntry[];
   searchTerm: string;
   setSearchTerm: (value: string) => void;
-  onEdit: (entry: ProjectEntry, index: number) => void;
-  onDelete: (index: number) => void;
+  onEdit: (entry: ProjectEntry) => void;
+  onDelete: (id: string) => void;
 }
 
 export default function ProjectTable({
@@ -36,9 +37,8 @@ export default function ProjectTable({
   onDelete,
 }: ProjectTableProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [entryToDeleteIndex, setEntryToDeleteIndex] = useState<number | null>(
-    null
-  );
+  const [entryToDeleteId, setEntryToDeleteId] = useState<string | null>(null);
+
 
   
 
@@ -65,7 +65,7 @@ export default function ProjectTable({
             {entries.length === 0 ? (
               <ProjectEmptyState colSpan={7} />
             ) : (
-              entries.map((entry, index) => (
+              entries.map((entry) => (
                 <TableRow key={entry.id}>
                   <TableCell>
                     <div className="relative w-40 h-24 rounded overflow-hidden">
@@ -115,12 +115,17 @@ export default function ProjectTable({
                     </div>
                   </TableCell>
                   <TableCell className="text-right">
+                    
                     <ProjectActionsDropdown
                       entry={entry}
-                      onEdit={() => onEdit(entry, index)}
+                      onEdit={() => onEdit(entry)}
                       onDelete={() => {
-                        setEntryToDeleteIndex(index);
-                        setDeleteDialogOpen(true);
+                        if (entry.id) {
+                          setEntryToDeleteId(entry.id);
+                          setDeleteDialogOpen(true);
+                        } else {
+                          toast.error("Invalid project: missing ID");
+                        }
                       }}
                     />
                   </TableCell>
@@ -135,13 +140,13 @@ export default function ProjectTable({
         open={deleteDialogOpen}
         onClose={() => {
           setDeleteDialogOpen(false);
-          setEntryToDeleteIndex(null);
+          setEntryToDeleteId(null);
         }}
         onConfirm={() => {
-          if (entryToDeleteIndex !== null) {
-            onDelete(entryToDeleteIndex);
+          if (entryToDeleteId) {
+            onDelete(entryToDeleteId);
             setDeleteDialogOpen(false);
-            setEntryToDeleteIndex(null);
+            setEntryToDeleteId(null);
           }
         }}
       />

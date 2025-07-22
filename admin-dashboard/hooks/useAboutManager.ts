@@ -16,6 +16,7 @@ export function useAboutManager(itemsPerPage = 3) {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
   const [isLoading, setIsLoading] = useState(true);
 
   const filteredEntries = entries.filter(
@@ -63,22 +64,33 @@ export function useAboutManager(itemsPerPage = 3) {
     }
   };
 
-  const handleEdit = (entry: AboutEntry, index: number) => {
-    setEditingIndex(index);
-  };
 
-  const handleDelete = async (index: number) => {
-    const entry = entries[index];
-    if (!entry?.id) return;
-    try {
-      await deleteAbout(entry.id);
-      setEntries((prev) => prev.filter((_, i) => i !== index));
-      toast.success("Deleted successfully");
-    } catch (err) {
-      toast.error("Failed to delete.");
-      console.error(err);
-    }
-  };
+  const handleEdit = (entry: AboutEntry) => {
+  const index = entries.findIndex((e) => e.id === entry.id);
+  if (index !== -1) {
+    setEditingIndex(index);
+  }
+};
+
+
+  const handleDelete = async (id: string): Promise<void> => {
+  try {
+    await deleteAbout(id);
+    setEntries((prev) => prev.filter((e) => e.id !== id));
+    toast.success("Deleted successfully");
+
+    setCurrentPage((prevPage) => {
+      const maxPage = Math.ceil((entries.length - 1) / itemsPerPage);
+      return prevPage > maxPage ? maxPage : prevPage;
+    });
+
+    cancelEdit();
+  } catch (err) {
+    toast.error("Failed to delete.");
+    console.error(err);
+  }
+};
+
 
   const cancelEdit = () => setEditingIndex(null);
 

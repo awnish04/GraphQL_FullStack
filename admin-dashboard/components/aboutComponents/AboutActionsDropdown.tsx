@@ -10,14 +10,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { AboutEntry } from '@/components/aboutComponents/aboutForm';
+
+interface AboutActionsDropdownProps {
+  entry: AboutEntry;
+  onEdit: () => void;
+  onDelete: () => void;
+}
 
 export default function AboutActionsDropdown({
   onEdit,
   onDelete,
-}: {
-  onEdit: () => void;
-  onDelete: () => void;
-}) {
+}: AboutActionsDropdownProps){
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

@@ -15,7 +15,9 @@ const ITEMS_PER_PAGE = 2;
 
 export function useProjectManager() {
   const [entries, setEntries] = useState<ProjectEntry[]>([]);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editingEntry, setEditingEntry] = useState<ProjectEntry | undefined>(undefined);
+
+
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -58,37 +60,34 @@ export function useProjectManager() {
         const created = await createProject(entry);
         setEntries((prev) => [...prev, created]);
       }
-      toast.success("Saved successfully");
-      setEditingIndex(null);
+      setEditingEntry(undefined);
     } catch (err) {
-      toast.error("Failed to save.");
       console.error(err);
     }
   };
 
-  const handleEdit = (entry: ProjectEntry, index: number) => {
-    setEditingIndex(index);
-  };
+  const handleEdit = (entry: ProjectEntry) => {
+  setEditingEntry(entry);
+};
 
-  const handleDelete = async (index: number) => {
-    const entry = entries[index];
-    if (!entry?.id) return;
 
-    try {
-      await deleteProject(entry.id);
-      setEntries((prev) => prev.filter((_, i) => i !== index));
-      toast.success("Deleted successfully");
-    } catch (err) {
-      toast.error("Failed to delete.");
-      console.error(err);
-    }
-  };
+  const handleDelete = async (id: string) => {
+  try {
+    await deleteProject(id);
+    setEntries((prev) => prev.filter((entry) => entry.id !== id));
+    toast.success("Deleted successfully");
+  } catch (err) {
+    toast.error("Failed to delete.");
+    console.error(err);
+  }
+};
+
 
   return {
     entries: paginatedEntries,
     allEntries: entries,
-    editingEntry: editingIndex !== null ? entries[editingIndex] : undefined,
-    isEditing: editingIndex !== null,
+    editingEntry,
+    isEditing: editingEntry !== null,
     isLoading,
     currentPage,
     totalPages,
@@ -98,6 +97,6 @@ export function useProjectManager() {
     handleAddOrEdit,
     handleEdit,
     handleDelete,
-    cancelEdit: () => setEditingIndex(null),
+    cancelEdit: () => setEditingEntry(undefined),
   };
 }
