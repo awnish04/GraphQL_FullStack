@@ -5,10 +5,10 @@ import { BreadcrumbPage } from "@/components/ui/breadcrumb";
 
 // Map of paths to readable titles
 const pageTitles: Record<string, string> = {
-  "/": "Dashboard",
-  "/about": "About",
-  "/projects": "Projects",
-  "/settings": "Settings",
+  "/dashboard": "Dashboard",
+  "/dashboard/about": "About",
+  "/dashboard/projects": "Projects",
+  "/dashboard/settings": "Settings",
 };
 
 export default function BreadcrumbCurrentPage() {

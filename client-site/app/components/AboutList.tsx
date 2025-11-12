@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { getAbout } from "../api/graphql";
-import type { About } from "../../shared/types/about";
 import Image from "next/image";
+import { About } from '../../../shared/types/about';
 
 export default function AboutList() {
   const [abouts, setAbouts] = useState<About[]>([]);

@@ -64,14 +64,12 @@
 //     }
 //   };
 
-
 //   const handleEdit = (entry: AboutEntry) => {
 //   const index = entries.findIndex((e) => e.id === entry.id);
 //   if (index !== -1) {
 //     setEditingIndex(index);
 //   }
 // };
-
 
 //   const handleDelete = async (id: string): Promise<void> => {
 //   try {
@@ -90,7 +88,6 @@
 //     console.error(err);
 //   }
 // };
-
 
 //   const cancelEdit = () => setEditingIndex(null);
 
@@ -112,18 +109,18 @@
 //   };
 // }
 
-
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+
+import { toast } from "sonner";
+import { AboutEntry } from "@/components/aboutComponents/aboutForm";
 import {
   createAbout,
   deleteAbout,
   getAbout,
   updateAbout,
-} from "@/pages/api/graphql";
-import { toast } from "sonner";
-import { AboutEntry } from "@/components/aboutComponents/aboutForm";
+} from "@/app/api/graphql/route";
 
 export function useAboutManager(itemsPerPage = 3) {
   const [entries, setEntries] = useState<AboutEntry[]>([]);
@@ -189,7 +186,6 @@ export function useAboutManager(itemsPerPage = 3) {
       toast.error("Failed to save entry.");
     }
   };
-  
 
   const handleEdit = (entry: AboutEntry) => {
     setEditingData(entry);

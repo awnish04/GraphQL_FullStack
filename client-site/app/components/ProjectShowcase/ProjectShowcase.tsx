@@ -7,7 +7,7 @@ import Image from "next/image";
 import styles from "./ProjectShowcase.module.css";
 import gsap from "gsap";
 import { Project } from "../../../../shared/types/project";
-import { getProject } from "@/api/graphql";
+import { getProject } from "@/app/api/graphql";
 import { extractAverageColor } from "@/utils/colors";
 import Link from "next/link";
 

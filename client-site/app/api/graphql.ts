@@ -1,6 +1,7 @@
 import { gql, request } from "graphql-request";
-import { About, GetAboutResponse } from "../../shared/types/about";
-import { GetProjectResponse, Project } from "../../shared/types/project";
+import { About, GetAboutResponse } from "../../../shared/types/about";
+import { GetProjectResponse, Project } from "../../../shared/types/project";
+
 
 // const endpoint = "https://zippy-vibrancy-production.up.railway.app/graphql";
 const endpoint = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT as string;

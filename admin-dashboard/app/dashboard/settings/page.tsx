@@ -20,7 +20,7 @@ import { ModeToggle } from "@/components/modetoggle";
 export default function SettingsPage() {
   return (
     <div className="space-y-4">
-      <p className="text-muted-foreground">Customize your preferences</p>
+      <p className="text-xl font-semibold">Customize your preferences</p>
       <Card>
         <CardHeader>
           <CardTitle>Appearance</CardTitle>

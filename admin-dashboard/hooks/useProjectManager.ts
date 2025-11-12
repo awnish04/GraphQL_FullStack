@@ -2,22 +2,23 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import {
-  getProjects,
-  createProject,
-  updateProject,
-  deleteProject,
-} from "@/pages/api/graphql";
 import { ProjectEntry } from "@/components/projectsComponents/ProjectForm";
 import { toast } from "sonner";
+import {
+  createProject,
+  deleteProject,
+  getProjects,
+  updateProject,
+} from "@/app/api/graphql/route";
 
 const ITEMS_PER_PAGE = 2;
 
 export function useProjectManager() {
   const [entries, setEntries] = useState<ProjectEntry[]>([]);
-  const [editingEntry, setEditingEntry] = useState<ProjectEntry | undefined>(undefined);
+  const [editingEntry, setEditingEntry] = useState<ProjectEntry | undefined>(
+    undefined
+  );
   // const [editingEntry, setEditingEntry] = useState<ProjectEntry | null>(null);
-
 
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -68,21 +69,19 @@ export function useProjectManager() {
   };
 
   const handleEdit = (entry: ProjectEntry) => {
-  setEditingEntry(entry);
-};
-
+    setEditingEntry(entry);
+  };
 
   const handleDelete = async (id: string) => {
-  try {
-    await deleteProject(id);
-    setEntries((prev) => prev.filter((entry) => entry.id !== id));
-    toast.success("Deleted successfully");
-  } catch (err) {
-    toast.error("Failed to delete.");
-    console.error(err);
-  }
-};
-
+    try {
+      await deleteProject(id);
+      setEntries((prev) => prev.filter((entry) => entry.id !== id));
+      toast.success("Deleted successfully");
+    } catch (err) {
+      toast.error("Failed to delete.");
+      console.error(err);
+    }
+  };
 
   return {
     entries: paginatedEntries,

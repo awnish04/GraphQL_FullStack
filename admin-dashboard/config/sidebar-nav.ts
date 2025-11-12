@@ -1,24 +1,24 @@
-import { LayoutDashboard, ListTodo, List, Settings } from "lucide-react";
+import { LayoutDashboard, ListTodo, List } from "lucide-react";
 
 export const sidebarNavItems = [
   {
     title: "Dashboard",
-    href: "/",
+    href: "/dashboard",
     icon: LayoutDashboard,
   },
   {
     title: "About",
-    href: "/about",
+    href: "/dashboard/about",
     icon: ListTodo,
   },
   {
     title: "Projects",
-    href: "/projects",
+    href: "/dashboard/projects",
     icon: List,
   },
-  {
-    title: "Settings",
-    href: "/settings",
-    icon: Settings,
-  },
+  // {
+  //   title: "Settings",
+  //   href: "/dashboard/settings",
+  //   icon: Settings,
+  // },
 ];

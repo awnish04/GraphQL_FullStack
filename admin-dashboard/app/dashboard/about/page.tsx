@@ -90,7 +90,7 @@ export default function AboutPage() {
   }
 
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6">
       <AboutForm
         onAdd={handleAddOrEdit}
         initialData={editingData}

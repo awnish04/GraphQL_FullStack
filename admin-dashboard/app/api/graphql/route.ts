@@ -1,10 +1,10 @@
 import { gql, request } from "graphql-request";
-import { GetProjectResponse, Project } from '../../../shared/types/project';
 import {
   About,
   CreateAboutInput,
   GetAboutResponse,
-} from "../../../shared/types/about";
+} from "../../../../shared/types/about";
+import { GetProjectResponse, Project } from "../../../../shared/types/project";
 
 const endpoint = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT as string;
 
@@ -133,7 +133,7 @@ export const getProjects = async () => {
         liveUrl
       }
     }
-  `
+  `;
   const res = await request<GetProjectResponse>(endpoint, query);
   return res.getProjects;
 };

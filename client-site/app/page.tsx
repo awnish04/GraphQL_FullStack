@@ -1,9 +1,9 @@
-import AboutList from "@/pages/AboutPage";
-
+import { getProject } from "./api/graphql";
+import AboutList from "./components/AboutList";
 import ProjectShowcase from "./components/ProjectShowcase/ProjectShowcase";
-import { getProject } from "@/api/graphql";
 
-export default async function Home() {
+
+export default async function About() {
   const projects = await getProject();
   return (
     <div className="flex flex-col gap-8 p-6 max-w-6xl mx-auto">
