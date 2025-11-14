@@ -1,17 +1,3 @@
-// import type { NextConfig } from "next";
-
-// const nextConfig: NextConfig = {
-//   /* config options here */
-//   images: {
-//     domains: ["res.cloudinary.com", "images.remotePatterns.com"],
-//   },
-//   experimental: {
-//     esmExternals: true,
-//   },
-// };
-
-// export default nextConfig;
-
 // next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {

@@ -1,10 +1,3 @@
-// export { auth as middleware } from "@/auth";
-
-// export const config = {
-//   matcher: ["/dashboard/:path*"], // protect all dashboard pages
-// };
-
-
 // middleware.ts
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
